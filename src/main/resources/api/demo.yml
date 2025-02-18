@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Demo project for BCNC use case
+  description: |-
+    API to manage product tariffs
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: Brand Products
+    description: Manage brand products
+
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+
+paths:
+  /v0/brand/{bradId}/product/{productId}:
+    get:
+      tags:
+        - Brand Products
+      summary: Returns the applicable price for the product on a given date
+      description: |-
+        Returns the applicable price for the product on a given date, brand and product
+      operationId: getBrandProduct
+      parameters:
+        - in: path
+          name: bradId
+          schema:
+            type: integer
+          required: true
+          description: Product brand id.
+          example: 1 (ZARA)
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: Product id.
+          example: 35455
+        - in: query
+          name: productDate
+          description: Product date
+          schema:
+            type: string
+            format: date-time
+            description: Product date
+            example:  2025-11-25T16:43:00
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Invalid input
+
+        '404':
+          description: None product found for that brand, product id and date
+
+        '5XX':
+          description: Unexpected exception
+
+
+components:
+  schemas:
+    ProductResponse:
+      type: object
+      required:
+        - productId
+        - brandId
+        - priceList
+        - startDate
+        - endDate
+        - price
+        - currency
+      properties:
+        productId:
+          type: integer
+          description: product id
+          example:  35455
+        brandId:
+          type: integer
+          description: brand id
+          example:  1
+        priceList:
+          type: integer
+          description: price list id
+          example:  4
+        startDate:
+          type: string
+          format: date-time
+          description: Price start date for that product
+          example:  2025-10-25T16:43:00
+        endDate:
+          type: string
+          format: date-time
+          description: Price end date for that product
+          example:  2025-10-25T19:53:00
+        price:
+          type: number
+          format: float
+          description: price
+          example:  35.50
+        currency:
+          type: string
+          description: ISO3 Price currency
+          example: "EUR"
