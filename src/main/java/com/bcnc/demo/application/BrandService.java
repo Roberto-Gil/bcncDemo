@@ -1,28 +1,24 @@
 package com.bcnc.demo.application;
 
+import com.bcnc.demo.application.exception.ProductNotFoundException;
 import com.bcnc.demo.domain.model.Product;
 import com.bcnc.demo.domain.port.ProductPort;
-import com.bcnc.demo.application.exception.ProductNotFoundException;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.Optional;
 
 @Slf4j
 @AllArgsConstructor
 @Service
 public class BrandService {
 
-  private final ProductPort productPort;
+    private final ProductPort productPort;
 
-  public Product getBrandProductByDate(Integer bradId, Integer productId,
-      OffsetDateTime productDate) {
-    var products = productPort.findByBrandIdAndProductIdAndDate(bradId, productId, productDate);
-    return Optional.ofNullable(products).stream().flatMap(Collection::stream)
-        .max(Comparator.comparing(Product::getPriority))
-        .orElseThrow(ProductNotFoundException::new);
-  }
+    public Product getBrandProductByDate(Integer bradId, Integer productId, OffsetDateTime productDate) {
+        Optional<Product> product = productPort.findByBrandIdAndProductIdAndDateWithMaxPriority(bradId, productId, productDate);
+        return product.orElseThrow(ProductNotFoundException::new);
+    }
 }

@@ -2,18 +2,17 @@ package com.bcnc.demo.infrastructure.output.persistence.mapper;
 
 import com.bcnc.demo.domain.model.Product;
 import com.bcnc.demo.infrastructure.output.persistence.entity.ProductEntity;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface ProductEntityMapper {
 
-  Product toProduct(ProductEntity productEntity);
+    default Optional<Product> toOptionalProduct(Optional<ProductEntity> productEntity) {
+        return Optional.ofNullable(toProduct(productEntity.orElse(null)));
+    }
 
-  List<Product> toProductList(List<ProductEntity> productEntity);
+    Product toProduct(ProductEntity productEntity);
 
 }
